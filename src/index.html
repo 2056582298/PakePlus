@@ -1,22 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="stylesheet" href="styles.css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus App</title>
-        <script type="module" src="/main.js" defer></script>
-    </head>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool City 半RP服务器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#0A2463',
+                        dark: '#121212',
+                        light: '#f8f9fa'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .animate-pulse-slow {
+                animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-light min-h-screen flex flex-col">
+    <!-- 背景图 (后续可替换) -->
+    <div class="fixed inset-0 z-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-dark via-dark/90 to-dark"></div>
+    </div>
 
-    <body>
-        <main class="container">
-            <h1>Welcome to PakePlus</h1>
+    <!-- 主内容区 -->
+    <main class="flex-grow relative z-10 py-12 px-6 md:px-12 max-w-4xl mx-auto w-full flex items-center">
+        <div class="w-full">
+            <!-- 标题 -->
+            <div class="text-center mb-10">
+                <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold mb-4 text-shadow text-primary">Cool City 半RP服务器</h1>
+                <p class="text-white/70 text-lg">真实世界角色扮演</p>
+            </div>
 
-            <form class="row" id="greet-form">
-                <input id="greet-input" placeholder="Enter a name..." />
-                <button type="submit">Greet</button>
-            </form>
-            <p id="greet-msg"></p>
-        </main>
-    </body>
+            <!-- 服务器卡片 -->
+            <div class="bg-dark/60 bg-blur rounded-2xl overflow-hidden border border-white/10 max-w-2xl mx-auto">
+                <!-- 服务器图标区域 -->
+                <div class="flex justify-center p-8">
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/30 shadow-lg shadow-primary/20">
+                        <img src="https://pic1.imgdb.cn/item/685b717858cb8da5c86e064f.png" alt="服务器图标" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <!-- 服务器信息 -->
+                <div class="px-8 pb-8">
+                    <h2 class="text-2xl font-bold text-white text-center mb-4">真实世界角色扮演</h2>
+                    <p class="text-white/70 text-center mb-8">
+                        体验最真实的城市生活，拥有完整的经济系统和职业体系，与其他玩家共同打造属于你们的故事。
+                        自定义内容丰富，游戏体验流畅，欢迎加入我们的社区！
+                    </p>
+                    
+                    <!-- 加入按钮 -->
+                    <div class="flex justify-center">
+                        <button id="join-button" class="bg-primary hover:bg-primary/90 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center shadow-xl shadow-primary/30 transform hover:scale-105">
+                            <i class="fa fa-play-circle mr-3"></i>加入服务器
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 协议确认提示遮罩 -->
+    <div id="protocol-prompt" class="fixed inset-0 z-50 bg-dark/80 flex items-center justify-center hidden">
+        <div class="bg-dark/90 bg-blur border border-primary/30 rounded-xl p-8 max-w-md w-full mx-4 transform transition-all">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-gamepad text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white">启动FiveM游戏</h3>
+                <p class="text-white/60 mt-2">点击下方按钮确认启动游戏客户端</p>
+            </div>
+            <div class="space-y-4">
+                <button id="confirm-launch" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center shadow-lg shadow-primary/20">
+                    <i class="fa fa-play-circle mr-2"></i>确认启动
+                </button>
+                <button id="cancel-launch" class="w-full bg-dark/80 hover:bg-dark/60 text-white/70 py-3 rounded-lg font-medium transition-all duration-300 flex items-center justify-center border border-white/10">
+                    <i class="fa fa-times mr-2"></i>取消
+                </button>
+                <p class="text-white/40 text-xs text-center">如果没有看到确认弹窗，请检查浏览器顶部或底部的提示</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 服务器ID (实际使用时可以通过后端API获取)
+        const SERVER_ID = 'me8g8d';
+        
+        // 获取DOM元素
+        const joinButton = document.getElementById('join-button');
+        const protocolPrompt = document.getElementById('protocol-prompt');
+        const confirmLaunch = document.getElementById('confirm-launch');
+        const cancelLaunch = document.getElementById('cancel-launch');
+
+        // 加入服务器
+        joinButton.addEventListener('click', () => {
+            // 显示协议确认提示
+            protocolPrompt.classList.remove('hidden');
+        });
+
+        // 确认启动游戏
+        confirmLaunch.addEventListener('click', () => {
+            try {
+                // 隐藏提示
+                protocolPrompt.classList.add('hidden');
+                
+                // 显示按钮加载状态
+                joinButton.disabled = true;
+                joinButton.innerHTML = '<i class="fa fa-spinner fa-spin mr-3"></i>正在连接...';
+                
+                // 创建隐藏的iframe来触发链接
+                const iframe = document.createElement('iframe');
+                iframe.style = 'position:absolute; width:1px; height:1px; top:-1000px; left:-1000px; border:0;';
+                iframe.src = `fivem://connect/${SERVER_ID}`;
+                document.body.appendChild(iframe);
+                
+                // 5秒后检查并重置
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                    joinButton.disabled = false;
+                    joinButton.innerHTML = '<i class="fa fa-play-circle mr-3"></i>加入服务器';
+                    
+                    // 检查是否启动成功 (这部分检测并不准确)
+                    const isFiveMInstalled = localStorage.getItem('fivemInstalled') === 'true';
+                    if (!isFiveMInstalled) {
+                        alert('无法检测到FiveM客户端，请确保已安装FiveM');
+                        localStorage.setItem('fivemInstalled', 'false');
+                    }
+                }, 5000);
+                
+            } catch (error) {
+                console.error('连接错误:', error);
+                alert('连接服务器失败，请重试');
+                joinButton.disabled = false;
+                joinButton.innerHTML = '<i class="fa fa-play-circle mr-3"></i>加入服务器';
+            }
+        });
+
+        // 取消启动
+        cancelLaunch.addEventListener('click', () => {
+            protocolPrompt.classList.add('hidden');
+        });
+
+        // 检测FiveM是否安装 (不保证100%准确)
+        window.addEventListener('load', () => {
+            // 简单检测是否有FiveM协议处理程序
+            try {
+                const testLink = document.createElement('a');
+                testLink.href = 'fivem://';
+                document.body.appendChild(testLink);
+                
+                setTimeout(() => {
+                    document.body.removeChild(testLink);
+                }, 0);
+                
+                localStorage.setItem('fivemInstalled', 'true');
+            } catch (e) {
+                localStorage.setItem('fivemInstalled', 'false');
+            }
+        });
+    </script>
+</body>
 </html>
