@@ -1,0 +1,24 @@
+{
+  "name": "dlq",
+  "version": "1.0.0",
+  "main": "dlq/dlq.html",
+  "window": {
+    "title": "Cool City 半RP服务器",
+    "width": 800,
+    "height": 600,
+    "min_width": 600,
+    "min_height": 400,
+    "frame": true,
+    "toolbar": false,
+    "icon": "dlq/dlq.png",
+    "icons":{
+      "256":"dlq/icon.ico"
+    },
+    "position": "center",
+    "show_in_taskbar": true
+  },
+  "webkit": {
+    "page-cache": false
+  },
+  "chromium-args": "--disable-features=IsolateOrigins,site-per-process"
+}
