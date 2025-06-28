@@ -1,7 +1,7 @@
 {
   "name": "dlq",
   "version": "1.0.0",
-  "main": "dlq/dlq.html",
+  "main": "FiveM-Launcher/index.html",
   "window": {
     "title": "Cool City 半RP服务器",
     "width": 800,
@@ -10,9 +10,9 @@
     "min_height": 400,
     "frame": true,
     "toolbar": false,
-    "icon": "dlq/dlq.png",
+    "icon": "FiveM-Launcher/dlq.png",
     "icons":{
-      "256":"dlq/icon.ico"
+      "256":"FiveM-Launcher/icon.ico"
     },
     "position": "center",
     "show_in_taskbar": true
